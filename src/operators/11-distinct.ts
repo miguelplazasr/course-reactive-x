@@ -1,14 +1,21 @@
 /**
- * distinctUntilKeyChange : emite valores siempre y cuando la emision anterior no es la mismo, el mismo concepto que el distinctUntilChange , usado con objetos
+ * distinct : deja pasar los valores que no has sido previamente emitidos
  */
-import { from } from 'rxjs';
-import { distinctUntilKeyChanged } from 'rxjs/operators';
+import {from, of} from 'rxjs';
+import {distinct} from 'rxjs/operators';
 
 const observer = {
     next: value => console.log('[next] -> ', value),
     complete: () => console.info('completado [obs]')
 };
 
+const numeros$ = of<number|string>( 1,1,1,3,3,'1',2,4,4,5,3,1);
+
+numeros$
+    .pipe(
+        distinct() // utiliza el ===
+    )
+    .subscribe(console.log );
 
 interface Personaje {
     nombre: string;
@@ -17,12 +24,6 @@ interface Personaje {
 const personajes: Personaje[] = [
     {
         nombre: 'Megaman'
-    },
-    {
-        nombre: 'Megaman'
-    },
-    {
-        nombre: 'X'
     },
     {
         nombre: 'X'
@@ -43,6 +44,6 @@ const personajes: Personaje[] = [
 
 from( personajes )
     .pipe(
-        distinctUntilKeyChanged( 'nombre' )
+        distinct( p => p.nombre )
     )
     .subscribe(console.log);
